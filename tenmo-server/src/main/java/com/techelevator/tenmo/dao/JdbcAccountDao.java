@@ -19,7 +19,7 @@ public class JdbcAccountDao implements AccountDao {
     public BigDecimal getBalance(int accountId){
         Account newAccount = null;
         // create account
-        String sql = "SELECT * FROM account WHERE account_id = ?";
+        String sql = "SELECT * FROM account WHERE user_id = ?";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountId);
             if(results.next()){
@@ -31,6 +31,7 @@ public class JdbcAccountDao implements AccountDao {
         } catch (DataIntegrityViolationException e) {
             throw new DaoException("Data integrity violation", e);
         }
+        System.out.println(newAccount.getBalance());
         return newAccount.getBalance();
     }
     private Account mapRowToAccount(SqlRowSet rs) {

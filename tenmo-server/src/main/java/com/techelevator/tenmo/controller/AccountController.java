@@ -19,7 +19,7 @@ public class AccountController {
         this.accountDao = accountDao;
     }
 
-    @GetMapping("/{userId}/balance")
+    @RequestMapping("/{userId}/balance")
     public ResponseEntity<BigDecimal> getBalance(@PathVariable int userId) {
         BigDecimal balance = accountDao.getBalance(userId);
         if (balance != null) {
