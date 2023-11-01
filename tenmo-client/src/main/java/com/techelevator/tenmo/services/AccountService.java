@@ -14,7 +14,7 @@ import java.net.http.HttpResponse;
 
 public class AccountService {
 
-    private String baseUrl = null;
+    private final String baseUrl;
     private String token = null;
     private final RestTemplate restTemplate = new RestTemplate();
 
