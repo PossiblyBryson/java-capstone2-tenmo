@@ -14,18 +14,22 @@ import java.net.http.HttpResponse;
 
 public class AccountService {
 
-    private static final String API_BASE_URL = "http://localhost:8080/";
+    private String baseUrl = null;
     private String token = null;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public void setAuthToken(String token) {
+    public AccountService(String url) {
+        this.baseUrl = url;
+    }
+
+    public void setAuthToken(String baseUrl, String token) {
         this.token = token;
     }
 
     public BigDecimal getBalance(int id) {
         Account account = null;
         try {
-            ResponseEntity<Account> response = restTemplate.exchange(API_BASE_URL + "accounts/" + id,
+            ResponseEntity<Account> response = restTemplate.exchange(baseUrl + "accounts/" + id,
                     HttpMethod.GET, makeAuthEntity(), Account.class);
             account = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
