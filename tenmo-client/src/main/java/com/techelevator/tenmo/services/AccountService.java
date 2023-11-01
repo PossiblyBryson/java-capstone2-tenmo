@@ -29,7 +29,7 @@ public class AccountService {
     public BigDecimal getBalance(int id) {
         BigDecimal balance = null;
         try {
-            ResponseEntity<BigDecimal> response = restTemplate.exchange(baseUrl + "accounts/" + id + "balance",
+            ResponseEntity<BigDecimal> response = restTemplate.exchange(baseUrl + "accounts/" + id + "/balance",
                     HttpMethod.GET, makeAuthEntity(), BigDecimal.class);
             balance = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
