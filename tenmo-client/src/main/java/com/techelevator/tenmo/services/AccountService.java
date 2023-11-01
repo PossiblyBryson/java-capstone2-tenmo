@@ -15,27 +15,27 @@ import java.net.http.HttpResponse;
 public class AccountService {
 
     private final String baseUrl;
-    private String token = null;
+    private String token;
     private final RestTemplate restTemplate = new RestTemplate();
 
     public AccountService(String url) {
         this.baseUrl = url;
     }
 
-    public void setAuthToken(String baseUrl, String token) {
+    public void setAuthToken(String token) {
         this.token = token;
     }
 
     public BigDecimal getBalance(int id) {
-        Account account = null;
+        BigDecimal balance = null;
         try {
-            ResponseEntity<Account> response = restTemplate.exchange(baseUrl + "accounts/" + id,
-                    HttpMethod.GET, makeAuthEntity(), Account.class);
-            account = response.getBody();
+            ResponseEntity<BigDecimal> response = restTemplate.exchange(baseUrl + "accounts/" + id + "balance",
+                    HttpMethod.GET, makeAuthEntity(), BigDecimal.class);
+            balance = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
-        return account.getBalance();
+        return balance;
     }
 
     private HttpEntity<Account> createAccountEntity(Account account) {
