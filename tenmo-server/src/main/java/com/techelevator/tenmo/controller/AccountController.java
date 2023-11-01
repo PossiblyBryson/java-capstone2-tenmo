@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.controller;
 
+import com.techelevator.tenmo.dao.AccountDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,12 +27,5 @@ public class AccountController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
-    public boolean sendTransfer(TransferDetails transferDetails) {
-        return accountDao.sendTransfer(transferDetails);
-    }
-
-    public List<Transfer> getTransfersByUserId(int userId) {
-        return accountDao.getTransfersByUserId(userId);
     }
 }
