@@ -15,7 +15,9 @@ import java.util.List;
 
 @Component
 public class JdbcAccountDao implements AccountDao {
+
     private final JdbcTemplate jdbcTemplate;
+
     public JdbcAccountDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -44,8 +46,8 @@ public class JdbcAccountDao implements AccountDao {
         boolean didItWork = false;
         String sql = "UPDATE account SET balance = balance + ? " +
                 "WHERE user_id = ?";
-        String sql1 = "UPDATE account SET balance = balance - ? " + "WHERE user_id =?";
-
+        String sql1 = "UPDATE account SET balance = balance - ? " + "" +
+                "WHERE user_id =?";
         //create a record in the transfers table
         try {
             int results = jdbcTemplate.update(sql, amountToAdd, recepientId);
@@ -59,7 +61,6 @@ public class JdbcAccountDao implements AccountDao {
             throw new DaoException("Data integrity violation", e);
         }
         return didItWork;
-
     }
 
     private Account mapRowToAccount(SqlRowSet rs) {
