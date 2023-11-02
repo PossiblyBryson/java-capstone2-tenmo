@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/accounts")
@@ -24,6 +25,15 @@ public class AccountController {
         BigDecimal balance = accountDao.getBalance(userId);
         if (balance != null) {
             return new ResponseEntity<>(balance, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @RequestMapping("/usernames")
+    public ResponseEntity<List<String>> getUsers() {
+        List<String> usernames = accountDao.getUsers();
+        if (usernames != null) {
+            return new ResponseEntity<>(usernames, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

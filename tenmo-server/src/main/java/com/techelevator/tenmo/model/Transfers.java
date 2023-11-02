@@ -54,8 +54,8 @@ public class Transfers {
     public int getTransferStatusId() {
         return transferStatusId;
     }
-    public void setTransferStatusId(int ransferStatusId) {
-        this.transferStatusId = ransferStatusId;
+    public void setTransferStatusId(int transferStatusId) {
+        this.transferStatusId = transferStatusId;
     }
     public int getAccountFrom() {
         return accountFrom;

@@ -99,6 +99,7 @@ public class JDBCTransfersDAO implements TransfersDAO {
         } else {
             return "Insufficient funds for transfer";
         }
+        return null;
     }
     private Transfers mapRowToTransfer(SqlRowSet results) {
         Transfers transfer = new Transfers();
