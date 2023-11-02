@@ -39,7 +39,6 @@ public class JdbcAccountDao implements AccountDao {
         return newAccount.getBalance();
     }
 
-
     @Override
     public BigDecimal addToBalance(BigDecimal amountToAdd, int id) {
         return null;
