@@ -20,7 +20,7 @@ public class AccountController {
         this.accountDao = accountDao;
     }
 
-    @RequestMapping("/{userId}/balance")
+    @RequestMapping(path = "/{userId}/balance", method = RequestMethod.GET)
     public ResponseEntity<BigDecimal> getBalance(@PathVariable int userId) {
         BigDecimal balance = accountDao.getBalance(userId);
         if (balance != null) {
@@ -29,7 +29,7 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @RequestMapping("/usernames")
+    @RequestMapping(path = "/usernames", method = RequestMethod.GET)
     public ResponseEntity<List<String>> getUsers() {
         List<String> usernames = accountDao.getUsers();
         if (usernames != null) {
