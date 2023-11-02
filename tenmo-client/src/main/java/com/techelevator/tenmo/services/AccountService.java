@@ -2,6 +2,7 @@ package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.util.BasicLogger;
 import org.springframework.http.*;
@@ -62,16 +63,16 @@ public class AccountService {
         return updatedBalance;
     }
 
-    public String[] listAccounts() {
-        String[] accounts = null;
+    public User[] listUsers() {
+        User[] users = null;
         try {
-            ResponseEntity<String[]> response = restTemplate.exchange(baseUrl + "/accounts/usernames", HttpMethod.GET,
-                    makeAuthEntity(), String[].class);
-            accounts = response.getBody();
+            ResponseEntity<User[]> response = restTemplate.exchange(baseUrl + "/accounts/users", HttpMethod.GET,
+                    makeAuthEntity(), User[].class);
+            users = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
-        return accounts;
+        return users;
     }
 
     private HttpEntity<Account> createAccountEntity(Account account) {

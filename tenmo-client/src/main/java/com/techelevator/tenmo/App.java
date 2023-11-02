@@ -1,10 +1,14 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class App {
 
@@ -102,7 +106,14 @@ public class App {
 	}
 
 	private void sendBucks() {
-        accountService.listAccounts();
+        User[] users = accountService.listUsers();
+        System.out.println("Select someone to send TE bucks to: ");
+        for(User user: users){
+            System.out.println(user.getId() + " " + user.getUsername());
+
+
+        }
+
 	}
 
 	private void requestBucks() {

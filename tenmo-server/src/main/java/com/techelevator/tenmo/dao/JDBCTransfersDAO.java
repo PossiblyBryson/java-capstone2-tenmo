@@ -90,16 +90,16 @@ public class JDBCTransfersDAO implements TransfersDAO {
 
     private String updateTransferAndBalance(Transfers transfer, int statusId) {
         BigDecimal transferAmount = transfer.getAmount();
-        if (AccountDao.getBalance(transfer.getAccountFrom()).compareTo(transferAmount) >= 0) {
+        if (accountDAO.getBalance(transfer.getAccountFrom()).compareTo(transferAmount) >= 0) {
             String sql = "UPDATE transfers SET transfer_status_id = ? WHERE transfer_id = ?;";
             jdbcTemplate.update(sql, statusId, transfer.getTransferId());
-            AccountDao.addToBalance(transferAmount, transfer.getAccountTo());
-            AccountDao.subtractFromBalance(transferAmount, transfer.getAccountFrom());
+            accountDAO.addToBalance(transferAmount, transfer.getAccountTo());
+            accountDAO.subtractFromBalance(transferAmount, transfer.getAccountFrom());
             return "Update successful";
         } else {
             return "Insufficient funds for transfer";
         }
-        return null;
+
     }
     private Transfers mapRowToTransfer(SqlRowSet results) {
         Transfers transfer = new Transfers();
