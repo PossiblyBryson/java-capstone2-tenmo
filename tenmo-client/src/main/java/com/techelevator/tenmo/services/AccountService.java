@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.net.http.HttpResponse;
+import java.util.List;
 
 public class AccountService {
 
@@ -36,6 +37,42 @@ public class AccountService {
             BasicLogger.log(e.getMessage());
         }
         return balance;
+    }
+
+    public BigDecimal addToBalance(BigDecimal amountToAdd, int id) {
+        BigDecimal updatedBalance = null;
+        try {
+            ResponseEntity<BigDecimal> response = restTemplate.exchange(baseUrl + "accounts/" + id
+                + "/balance", HttpMethod.PUT, makeAuthEntity(), BigDecimal.class);
+            updatedBalance = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return updatedBalance;
+    }
+
+    public BigDecimal subtractFromBalance(BigDecimal amountToSubtract, int id) {
+        BigDecimal updatedBalance = null;
+        try {
+            ResponseEntity<BigDecimal> response = restTemplate.exchange(baseUrl + "accounts/" + id
+                    + "/balance", HttpMethod.PUT, makeAuthEntity(), BigDecimal.class);
+            updatedBalance = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return updatedBalance;
+    }
+
+    public String[] listAccounts() {
+        String[] accounts = null;
+        try {
+            ResponseEntity<String[]> response = restTemplate.exchange(baseUrl + "accounts/", HttpMethod.GET,
+                    makeAuthEntity(), String[].class);
+            accounts = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return accounts;
     }
 
     private HttpEntity<Account> createAccountEntity(Account account) {

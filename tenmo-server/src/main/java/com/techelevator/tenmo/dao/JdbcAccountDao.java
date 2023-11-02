@@ -24,7 +24,6 @@ public class JdbcAccountDao implements AccountDao {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountId);
             if(results.next()){
                  newAccount = mapRowToAccount(results);
-
             }
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
