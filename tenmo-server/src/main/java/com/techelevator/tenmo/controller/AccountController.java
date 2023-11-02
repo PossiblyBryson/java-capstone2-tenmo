@@ -25,7 +25,7 @@ public class AccountController {
         this.userDao =  userDao;
     }
 
-    @RequestMapping("/{userId}/balance")
+    @RequestMapping(path = "/{userId}/balance", method = RequestMethod.GET)
     public ResponseEntity<BigDecimal> getBalance(@PathVariable int userId) {
         BigDecimal balance = accountDao.getBalance(userId);
         if (balance != null) {
@@ -34,6 +34,7 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     @RequestMapping("/usernames")
     public ResponseEntity<List<String>> getUsernames(){
         List<String> usernames = userDao.getUsernames();
