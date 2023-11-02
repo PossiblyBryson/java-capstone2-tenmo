@@ -1,6 +1,9 @@
 package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.AccountDao;
+import com.techelevator.tenmo.dao.JdbcAccountDao;
+import com.techelevator.tenmo.dao.JdbcUserDao;
+import com.techelevator.tenmo.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +15,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/accounts")
 public class AccountController {
+    private final UserDao userDao;
 
     private final AccountDao accountDao;
 
     @Autowired
-    public AccountController(AccountDao accountDao) {
+    public AccountController(AccountDao accountDao, UserDao userDao) {
         this.accountDao = accountDao;
+        this.userDao =  userDao;
     }
 
     @RequestMapping(path = "/{userId}/balance", method = RequestMethod.GET)
@@ -29,14 +34,17 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @RequestMapping(path = "/usernames", method = RequestMethod.GET)
-    public ResponseEntity<List<String>> getUsers() {
-        List<String> usernames = accountDao.getUsers();
-        if (usernames != null) {
+
+    @RequestMapping("/usernames")
+    public ResponseEntity<List<String>> getUsernames(){
+        List<String> usernames = userDao.getUsernames();
+        if(usernames != null){
             return new ResponseEntity<>(usernames, HttpStatus.OK);
-        } else {
+        }
+        else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
     }
 
 }

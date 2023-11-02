@@ -65,7 +65,7 @@ public class AccountService {
     public String[] listAccounts() {
         String[] accounts = null;
         try {
-            ResponseEntity<String[]> response = restTemplate.exchange(baseUrl + "accounts/usernames", HttpMethod.GET,
+            ResponseEntity<String[]> response = restTemplate.exchange(baseUrl + "/accounts/usernames", HttpMethod.GET,
                     makeAuthEntity(), String[].class);
             accounts = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {

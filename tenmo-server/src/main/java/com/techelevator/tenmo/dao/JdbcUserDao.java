@@ -25,6 +25,25 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
+    public List<String> getUsernames() {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM tenmo_user";
+        try {
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+            while (results.next()) {
+                users.add(mapRowToUser(results));
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        }
+        List<String> usernames = new ArrayList<>();
+        for(User user: users){
+            usernames.add(user.getUsername());
+        }
+        return usernames;
+    }
+
+    @Override
     public User getUserById(int userId) {
         User user = null;
         String sql = "SELECT user_id, username, password_hash FROM tenmo_user WHERE user_id = ?";
@@ -92,6 +111,7 @@ public class JdbcUserDao implements UserDao {
         }
         return newUser;
     }
+
 
     private User mapRowToUser(SqlRowSet rs) {
         User user = new User();
