@@ -49,10 +49,14 @@ public class JdbcAccountDao implements AccountDao {
         String sql1 = "UPDATE account SET balance = balance - ? " + "" +
                 "WHERE user_id =?";
         //create a record in the transfers table
+        String sql1 = "UPDATE account SET balance = balance - ? " + "WHERE user_id =?";
+       
+        //TODO:create a record in the transfers table
+
         try {
             int results = jdbcTemplate.update(sql, amountToAdd, recepientId);
             int results1 = jdbcTemplate.update(sql1, amountToAdd, senderId);
-            if (results == 1 && results1 == 1) {
+            if (results == 1 && results1 == 1 ) {
                 didItWork = true;
             }
         } catch (CannotGetJdbcConnectionException e) {
