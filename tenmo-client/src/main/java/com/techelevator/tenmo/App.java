@@ -107,9 +107,17 @@ public class App {
 
 	private void sendBucks() {
         User[] users = accountService.listUsers();
+        int idSelection = -1;
         System.out.println("Select someone to send TE bucks to: ");
         for(User user: users){
             System.out.println(user.getId() + " " + user.getUsername());
+
+        }
+        idSelection= consoleService.promptForMenuSelection("Enter ID of user you are sending to (0 to cancel):");
+        if(idSelection < 1){
+            mainMenu();
+        }
+        else{
 
 
         }

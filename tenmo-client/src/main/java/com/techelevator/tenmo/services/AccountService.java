@@ -39,23 +39,17 @@ public class AccountService {
         return balance;
     }
 
-    public BigDecimal addToBalance(BigDecimal amountToAdd, int id) {
+    public BigDecimal updateBalance(BigDecimal amountToAdd, int id) {
+
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        HttpEntity<BigDecimal> entity = new HttpEntity<>(amountToAdd, headers);
+
+
         BigDecimal updatedBalance = null;
         try {
             ResponseEntity<BigDecimal> response = restTemplate.exchange(baseUrl + "accounts/" + id
                 + "/balance", HttpMethod.PUT, makeAuthEntity(), BigDecimal.class);
-            updatedBalance = response.getBody();
-        } catch (RestClientResponseException | ResourceAccessException e) {
-            BasicLogger.log(e.getMessage());
-        }
-        return updatedBalance;
-    }
-
-    public BigDecimal subtractFromBalance(BigDecimal amountToSubtract, int id) {
-        BigDecimal updatedBalance = null;
-        try {
-            ResponseEntity<BigDecimal> response = restTemplate.exchange(baseUrl + "accounts/" + id
-                    + "/balance", HttpMethod.PUT, makeAuthEntity(), BigDecimal.class);
             updatedBalance = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
