@@ -43,7 +43,11 @@ public class AccountController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
 
+    @RequestMapping(path = "/{id}" + "/balance", method = RequestMethod.PUT)
+    public ResponseEntity<BigDecimal> updateBalance() {
+        BigDecimal updatedBalance = accountDao.sendTEBucks()
     }
 
 }

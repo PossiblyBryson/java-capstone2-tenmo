@@ -41,13 +41,24 @@ public class JdbcAccountDao implements AccountDao {
 
 
     @Override
-    public BigDecimal addToBalance(BigDecimal amountToAdd, int id) {
-        return null;
-    }
+    public boolean sendTEBucks(BigDecimal amountToAdd, int recepientId, int senderId ) {
+        boolean didItWork = false;
+        String sql = "UPDATE account SET balance = balance + ? " +
+                "WHERE user_id = ?";
+        String sql1 = "UPDATE account SET balance = balance - ? " + "WHERE user_id =?";
+        try {
+            int results = jdbcTemplate.update(sql, amountToAdd, recepientId);
+            int results1 = jdbcTemplate.update(sql1, amountToAdd, senderId);
+            if (results == 1 && results1 == 1) {
+                didItWork = true;
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return didItWork;
 
-    @Override
-    public BigDecimal subtractFromBalance(BigDecimal amountToSubtract, int id) {
-        return null;
     }
 
     private Account mapRowToAccount(SqlRowSet rs) {
