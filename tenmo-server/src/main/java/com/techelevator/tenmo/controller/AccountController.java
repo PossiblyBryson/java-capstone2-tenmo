@@ -1,15 +1,15 @@
 package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.AccountDao;
-import com.techelevator.tenmo.dao.JdbcAccountDao;
-import com.techelevator.tenmo.dao.JdbcUserDao;
 import com.techelevator.tenmo.dao.UserDao;
+import com.techelevator.tenmo.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -35,13 +35,12 @@ public class AccountController {
         }
     }
 
-    @RequestMapping("/usernames")
-    public ResponseEntity<List<String>> getUsernames(){
-        List<String> usernames = userDao.getUsernames();
-        if(usernames != null){
-            return new ResponseEntity<>(usernames, HttpStatus.OK);
-        }
-        else{
+    @RequestMapping(path = "/users", method = RequestMethod.GET)
+    public ResponseEntity<List<User>> getUsers(){
+        List<User> users = userDao.getUsers();
+        if (users != null) {
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
