@@ -102,8 +102,7 @@ public class App {
 	}
 
 	private void sendBucks() {
-		// TODO Auto-generated method stub
-		
+        accountService.listAccounts();
 	}
 
 	private void requestBucks() {

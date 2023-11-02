@@ -20,9 +20,9 @@ public class JdbcUserDao implements UserDao {
     private static final BigDecimal STARTING_BALANCE = new BigDecimal("1000.00");
     private final JdbcTemplate jdbcTemplate;
 
-        public JdbcUserDao(JdbcTemplate jdbcTemplate) {
-            this.jdbcTemplate = jdbcTemplate;
-        }
+    public JdbcUserDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public User getUserById(int userId) {

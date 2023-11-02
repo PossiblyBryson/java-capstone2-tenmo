@@ -11,7 +11,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.net.http.HttpResponse;
-import java.util.List;
 
 public class AccountService {
 
@@ -66,7 +65,7 @@ public class AccountService {
     public String[] listAccounts() {
         String[] accounts = null;
         try {
-            ResponseEntity<String[]> response = restTemplate.exchange(baseUrl + "accounts/", HttpMethod.GET,
+            ResponseEntity<String[]> response = restTemplate.exchange(baseUrl + "accounts/usernames", HttpMethod.GET,
                     makeAuthEntity(), String[].class);
             accounts = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {

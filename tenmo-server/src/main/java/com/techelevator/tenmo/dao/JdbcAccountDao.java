@@ -38,7 +38,7 @@ public class JdbcAccountDao implements AccountDao {
         }
         return usernames;
 
-         }
+    }
 
     @Override
     public BigDecimal getBalance(int accountId){
