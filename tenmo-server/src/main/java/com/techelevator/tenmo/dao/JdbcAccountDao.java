@@ -46,6 +46,8 @@ public class JdbcAccountDao implements AccountDao {
         String sql = "UPDATE account SET balance = balance + ? " +
                 "WHERE user_id = ?";
         String sql1 = "UPDATE account SET balance = balance - ? " + "WHERE user_id =?";
+
+        //create a record in the transfers table
         try {
             int results = jdbcTemplate.update(sql, amountToAdd, recepientId);
             int results1 = jdbcTemplate.update(sql1, amountToAdd, senderId);
