@@ -39,7 +39,6 @@ public class JdbcAccountDao implements AccountDao {
         return newAccount.getBalance();
     }
 
-
     @Override
     public boolean sendTEBucks(BigDecimal amountToAdd, int recepientId, int senderId ) {
         boolean didItWork = false;
