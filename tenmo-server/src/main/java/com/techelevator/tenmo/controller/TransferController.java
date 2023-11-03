@@ -30,13 +30,9 @@ public class TransferController {
         return transferDao.getTransferById(id);
     }
 
-    @PostMapping("/send")
-    public String sendTransfer(@RequestBody Transfer transfer) {
-        return transferDao.sendTransfer(transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
-    }
 
-    @PostMapping("/request")
-    public String requestTransfer(@RequestBody Transfer transfer) {
+    @RequestMapping(path = "/request", method = RequestMethod.POST)
+    public boolean requestTransfer(@RequestBody Transfer transfer) {
         return transferDao.requestTransfer(transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
     }
 
