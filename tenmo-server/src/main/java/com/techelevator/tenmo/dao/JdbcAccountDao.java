@@ -66,8 +66,11 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
-    public boolean sendTEBucks(BigDecimal amountToAdd, int recepientId, int senderId ) {
+    public boolean sendTEBucks(BigDecimal amountToAdd, int recepientId, int senderId) {
         boolean didItWork = false;
+        if (recepientId == senderId) {
+            throw new DaoException("Cannot send money to own account");
+        }
         String insertTransferSql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                 "VALUES (?, ?, ?, ?, ?)";
         String sql = "UPDATE account SET balance = balance + ? " +
