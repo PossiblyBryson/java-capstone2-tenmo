@@ -3,8 +3,11 @@ package com.techelevator.tenmo.controller;
 import java.util.List;
 
 import com.techelevator.tenmo.dao.AccountDao;
+import com.techelevator.tenmo.model.TransferDto;
 import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,13 +48,26 @@ public class TransferController {
         return transferDao.getPendingRequests(id);
     }
 
-//    @PutMapping("/update/{statusId}")
-//    public String updateTransferStatus(@RequestBody Transfer transfer, @PathVariable int statusId) {
-//        return transferDao.updateTransferRequest(transfer, statusId);
-//    }
-
     @RequestMapping(path = "/requests/{id}/accept", method = RequestMethod.PUT)
     public boolean acceptTransfer(@PathVariable int id) {
-        return accountDao.acceptRequest(id);
+        return transferDao.acceptRequest(id);
     }
+
+    @RequestMapping(path = "/requests/{id}/deny", method = RequestMethod.PUT)
+    public boolean denyTransfer(@PathVariable int id) {
+        return transferDao.denyRequest(id);
+    }
+
+    @RequestMapping(path = "/{id}" + "/transfer", method = RequestMethod.POST)
+    public ResponseEntity<Boolean> sendTEBucks(@RequestBody TransferDto transfers) {
+        boolean isUpdated = transferDao.sendTEBucks(transfers.getAmount(), transfers.getAccountTo(), transfers.getAccountFrom());
+        if(isUpdated){
+            // get balance of current user
+            return new ResponseEntity<Boolean>(isUpdated, HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
