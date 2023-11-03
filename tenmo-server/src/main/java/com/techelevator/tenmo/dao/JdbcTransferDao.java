@@ -21,16 +21,13 @@ public class JdbcTransferDao implements TransferDao {
     private AccountDao accountDAO;
 
 
+
     @Override
     public List<Transfer> getAllTransfers(int userId) {
         List<Transfer> list = new ArrayList<>();
-        String sql = "SELECT t.transfer_id, t.amount, t.transfer_type_id, t.transfer_status_id, " +
-                "CASE WHEN t.account_from = a.account_id THEN 'Sent' ELSE 'Received' END AS transfer_direction " +
-                "FROM transfer t " +
-                "JOIN account a ON t.account_from = a.account_id OR t.account_to = a.account_id " +
-                "WHERE a.user_id = ?";
+        String sql = "SELECT * FROM transfer WHERE account_to = ? OR account_from = ? ";
 
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountDAO.getAccountIdFromUserId(userId), accountDAO.getAccountIdFromUserId(userId));
         while (results.next()) {
             Transfer transfer = mapRowToTransfer(results);
             list.add(transfer);
