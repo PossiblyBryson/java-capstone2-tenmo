@@ -16,7 +16,7 @@ import com.techelevator.tenmo.model.Transfer;
 
 @RestController
 @PreAuthorize("isAuthenticated()")
-@RequestMapping("/transfers")
+@RequestMapping("/transfer")
 public class TransferController {
 
     private final TransferDao transferDao;
@@ -28,11 +28,12 @@ public class TransferController {
         this.accountDao = accountDao;
     }
 
+    //Uses userId
     @RequestMapping(path = "/account/{id}", method = RequestMethod.GET)
     public List<Transfer> listAllTransfersForUser(@PathVariable int id) {
         return transferDao.getAllTransfers(id);
     }
-
+    //Uses transferId
     @GetMapping("/{id}")
     public Transfer getTransferById(@PathVariable int id) {
         return transferDao.getTransferById(id);
@@ -43,22 +44,23 @@ public class TransferController {
         return transferDao.requestTransfer(transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
     }
 
-    @RequestMapping(path = "/requests/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/request/{id}", method = RequestMethod.GET)
     public List<Transfer> listPendingTransferRequests(@PathVariable int id) {
         return transferDao.getPendingRequests(id);
     }
 
-    @RequestMapping(path = "/requests/{id}/accept", method = RequestMethod.PUT)
+    @RequestMapping(path = "/request/{id}/accept", method = RequestMethod.PUT)
     public boolean acceptTransfer(@PathVariable int id) {
         return transferDao.acceptRequest(id);
     }
 
-    @RequestMapping(path = "/requests/{id}/deny", method = RequestMethod.PUT)
+    @RequestMapping(path = "/request/{id}/deny", method = RequestMethod.PUT)
     public boolean denyTransfer(@PathVariable int id) {
         return transferDao.denyRequest(id);
     }
 
-    @RequestMapping(path = "/{id}" + "/transfer", method = RequestMethod.POST)
+    //Path uses userId
+    @RequestMapping(path = "/{id}" + "/send", method = RequestMethod.POST)
     public ResponseEntity<Boolean> sendTEBucks(@RequestBody TransferDto transfers) {
         boolean isUpdated = transferDao.sendTEBucks(transfers.getAmount(), transfers.getAccountTo(), transfers.getAccountFrom());
         if(isUpdated){

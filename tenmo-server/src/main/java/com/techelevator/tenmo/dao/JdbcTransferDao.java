@@ -65,7 +65,7 @@ public class JdbcTransferDao implements TransferDao {
     public boolean requestTransfer(int accountFrom, int accountTo, BigDecimal amount) {
         boolean success = false;
         if (accountFrom == accountTo) {
-            throw new DaoException("Cannot send money to own account");
+            throw new DaoException("Request failed: not a valid amount");
         }
         if (amount.equals(new BigDecimal(0))) {
             throw new DaoException("Cannot send an amount of 0");
