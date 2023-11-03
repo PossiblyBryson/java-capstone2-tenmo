@@ -20,7 +20,7 @@ public class TransferController {
         this.transferDao = transfersDAO;
     }
 
-    @GetMapping("/account/{id}")
+    @RequestMapping(path = "/account/{id}", method = RequestMethod.GET)
     public List<Transfer> listAllTransfersForUser(@PathVariable int id) {
         return transferDao.getAllTransfers(id);
     }
