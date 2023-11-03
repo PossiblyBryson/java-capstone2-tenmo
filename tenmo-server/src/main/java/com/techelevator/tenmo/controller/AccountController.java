@@ -45,7 +45,7 @@ public class AccountController {
         }
     }
 
-    @RequestMapping(path = "/{id}" + "/transfer", method = RequestMethod.PUT)
+    @RequestMapping(path = "/{id}" + "/transfer", method = RequestMethod.POST)
     public ResponseEntity<Boolean> updateBalance(@RequestBody TransferDTO transfers) {
         boolean isUpdated = accountDao.sendTEBucks(transfers.getAmount(), transfers.getAccountTo(), transfers.getAccountFrom());
         if(isUpdated){
