@@ -2,7 +2,7 @@ package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.AccountDao;
 import com.techelevator.tenmo.dao.UserDao;
-import com.techelevator.tenmo.model.TransferDTO;
+import com.techelevator.tenmo.model.TransferDto;
 import com.techelevator.tenmo.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,7 +46,7 @@ public class AccountController {
     }
 
     @RequestMapping(path = "/{id}" + "/transfer", method = RequestMethod.PUT)
-    public ResponseEntity<Boolean> updateBalance(@RequestBody TransferDTO transfers) {
+    public ResponseEntity<Boolean> updateBalance(@RequestBody TransferDto transfers) {
         boolean isUpdated = accountDao.sendTEBucks(transfers.getAmount(), transfers.getAccountTo(), transfers.getAccountFrom());
         if(isUpdated){
             // get balance of current user
