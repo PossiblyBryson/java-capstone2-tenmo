@@ -17,6 +17,12 @@ import java.util.List;
 public class JdbcAccountDao implements AccountDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private static int PENDING = 1;
+    private static int APPROVED =2;
+    private static int REJECTED = 3;
+
+    private static int REQUEST = 1;
+    private static int SEND = 2;
 
     public JdbcAccountDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -40,6 +46,24 @@ public class JdbcAccountDao implements AccountDao {
         System.out.println(newAccount.getBalance());
         return newAccount.getBalance();
     }
+    // Add a method that gets accountId based on userId
+    public int getAccountIdFromUserId(int userId){
+        Account newAccount = null;
+        // create account
+        String sql = "SELECT * FROM account WHERE user_id = ?";
+        try {
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+            if(results.next()){
+                newAccount = mapRowToAccount(results);
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return newAccount.getAccountId();
+
+    }
 
     @Override
     public boolean sendTEBucks(BigDecimal amountToAdd, int recepientId, int senderId ) {
@@ -53,11 +77,11 @@ public class JdbcAccountDao implements AccountDao {
         //create a record in the transfers table
 
         //TODO:create a record in the transfers table
-        int transferTypeId = 2;
-        int transferStatusId = 2;
+        int transferTypeId = SEND;
+        int transferStatusId = APPROVED;
 
         try {
-            int insertResults = jdbcTemplate.update(insertTransferSql, transferTypeId, transferStatusId, senderId, recepientId, amountToAdd);
+            int insertResults = jdbcTemplate.update(insertTransferSql, transferTypeId, transferStatusId, getAccountIdFromUserId(senderId), getAccountIdFromUserId(recepientId), amountToAdd);
             int results = jdbcTemplate.update(sql, amountToAdd, recepientId);
             int results1 = jdbcTemplate.update(sql1, amountToAdd, senderId);
             if (insertResults == 1 && results == 1 && results1 == 1) {
