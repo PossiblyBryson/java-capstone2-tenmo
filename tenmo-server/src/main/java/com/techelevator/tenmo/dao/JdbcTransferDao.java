@@ -5,14 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.techelevator.tenmo.exception.TransferNotFoundException;
+import com.techelevator.tenmo.model.Transfer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import com.techelevator.tenmo.model.Transfers;
+import com.techelevator.tenmo.model.Transfer;
 
 @Component
-public class JDBCTransfersDAO implements TransfersDAO {
+public class JdbcTransferDao implements TransferDao {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -20,8 +21,8 @@ public class JDBCTransfersDAO implements TransfersDAO {
     private AccountDao accountDAO;
 
     @Override
-    public List<Transfers> getAllTransfers(int userId) {
-        List<Transfers> list = new ArrayList<>();
+    public List<Transfer> getAllTransfers(int userId) {
+        List<Transfer> list = new ArrayList<>();
         String sql = "SELECT t.*, u.username AS userFrom, v.username AS userTo FROM transfers t " +
                 "JOIN accounts a ON t.account_from = a.account_id " +
                 "JOIN accounts b ON t.account_to = b.account_id " +
@@ -30,15 +31,15 @@ public class JDBCTransfersDAO implements TransfersDAO {
                 "WHERE a.user_id = ? OR b.user_id = ?";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId, userId);
         while (results.next()) {
-            Transfers transfer = mapRowToTransfer(results);
+            Transfer transfer = mapRowToTransfer(results);
             list.add(transfer);
         }
         return list;
     }
 
     @Override
-    public Transfers getTransferById(int transactionId) {
-        Transfers transfer = new Transfers();
+    public Transfer getTransferById(int transactionId) {
+        Transfer transfer = new Transfer();
         String sql = "SELECT t.*, u.username AS userFrom, v.username AS userTo, ts.transfer_status_desc, tt.transfer_type_desc FROM transfers t " +
                 "JOIN accounts a ON t.account_from = a.account_id " +
                 "JOIN accounts b ON t.account_to = b.account_id " +
@@ -67,12 +68,12 @@ public class JDBCTransfersDAO implements TransfersDAO {
     }
 
     @Override
-    public List<Transfers> getPendingRequests(int userId) {
+    public List<Transfer> getPendingRequests(int userId) {
         return null;
     }
 
     @Override
-    public String updateTransferRequest(Transfers transfer, int statusId) {
+    public String updateTransferRequest(Transfer transfer, int statusId) {
         String responseMessage;
         if (statusId == 3) {
             responseMessage = updateTransferStatusOnly(transfer, statusId);
@@ -82,28 +83,28 @@ public class JDBCTransfersDAO implements TransfersDAO {
         return responseMessage;
     }
 
-    private String updateTransferStatusOnly(Transfers transfer, int statusId) {
+    private String updateTransferStatusOnly(Transfer transfer, int statusId) {
         String sql = "UPDATE transfers SET transfer_status_id = ? WHERE transfer_id = ?;";
         jdbcTemplate.update(sql, statusId, transfer.getTransferId());
         return "Update successful";
     }
 
-    private String updateTransferAndBalance(Transfers transfer, int statusId) {
+    private String updateTransferAndBalance(Transfer transfer, int statusId) {
 //        BigDecimal transferAmount = transfer.getAmount();
 //        if (accountDAO.getBalance(transfer.getAccountFrom()).compareTo(transferAmount) >= 0) {
 //            String sql = "UPDATE transfers SET transfer_status_id = ? WHERE transfer_id = ?;";
 //            jdbcTemplate.update(sql, statusId, transfer.getTransferId());
 //            accountDAO.addToBalance(transferAmount, transfer.getAccountTo());
-//            accountDAO.subtractFromBalance(transferAmount, transfer.getAccountFrom());
+//            accountDA.subtractFromBalance(transferAmount, transfer.getAccountFrom());
 //            return "Update successful";
 //        } else {
 //            return "Insufficient funds for transfer";
 //        }
         return null;
-
     }
-    private Transfers mapRowToTransfer(SqlRowSet results) {
-        Transfers transfer = new Transfers();
+
+    private Transfer mapRowToTransfer(SqlRowSet results) {
+        Transfer transfer = new Transfer();
         transfer.setTransferId(results.getInt("transfer_id"));
         transfer.setTransferTypeId(results.getInt("transfer_type_id"));
         return transfer;

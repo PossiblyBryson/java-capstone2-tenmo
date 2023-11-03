@@ -5,48 +5,48 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import com.techelevator.tenmo.dao.TransfersDAO;
-import com.techelevator.tenmo.model.Transfers;
+import com.techelevator.tenmo.dao.TransferDao;
+import com.techelevator.tenmo.model.Transfer;
 
 @RestController
 @PreAuthorize("isAuthenticated()")
 @RequestMapping("/transfers")
 public class TransferController {
 
-    private final TransfersDAO transfersDAO;
+    private final TransferDao transferDao;
 
     @Autowired
-    public TransferController(TransfersDAO transfersDAO) {
-        this.transfersDAO = transfersDAO;
+    public TransferController(TransferDao transfersDAO) {
+        this.transferDao = transfersDAO;
     }
 
     @GetMapping("/account/{id}")
-    public List<Transfers> listAllTransfersForUser(@PathVariable int id) {
-        return transfersDAO.getAllTransfers(id);
+    public List<Transfer> listAllTransfersForUser(@PathVariable int id) {
+        return transferDao.getAllTransfers(id);
     }
 
     @GetMapping("/{id}")
-    public Transfers getTransferById(@PathVariable int id) {
-        return transfersDAO.getTransferById(id);
+    public Transfer getTransferById(@PathVariable int id) {
+        return transferDao.getTransferById(id);
     }
 
     @PostMapping("/send")
-    public String sendTransfer(@RequestBody Transfers transfer) {
-        return transfersDAO.sendTransfer(transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
+    public String sendTransfer(@RequestBody Transfer transfer) {
+        return transferDao.sendTransfer(transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
     }
 
     @PostMapping("/request")
-    public String requestTransfer(@RequestBody Transfers transfer) {
-        return transfersDAO.requestTransfer(transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
+    public String requestTransfer(@RequestBody Transfer transfer) {
+        return transferDao.requestTransfer(transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
     }
 
     @GetMapping("/requests/{id}")
-    public List<Transfers> listPendingTransferRequests(@PathVariable int id) {
-        return transfersDAO.getPendingRequests(id);
+    public List<Transfer> listPendingTransferRequests(@PathVariable int id) {
+        return transferDao.getPendingRequests(id);
     }
 
     @PutMapping("/update/{statusId}")
-    public String updateTransferStatus(@RequestBody Transfers transfer, @PathVariable int statusId) {
-        return transfersDAO.updateTransferRequest(transfer, statusId);
+    public String updateTransferStatus(@RequestBody Transfer transfer, @PathVariable int statusId) {
+        return transferDao.updateTransferRequest(transfer, statusId);
     }
 }

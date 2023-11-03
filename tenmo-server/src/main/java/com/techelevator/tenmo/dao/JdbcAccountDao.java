@@ -84,7 +84,7 @@ public class JdbcAccountDao implements AccountDao {
             int insertResults = jdbcTemplate.update(insertTransferSql, transferTypeId, transferStatusId, getAccountIdFromUserId(senderId), getAccountIdFromUserId(recepientId), amountToAdd);
             int results = jdbcTemplate.update(sql, amountToAdd, recepientId);
             int results1 = jdbcTemplate.update(sql1, amountToAdd, senderId);
-            if (results == 1 && results1 == 1 ) {
+            if (insertResults == 1 && results == 1 && results1 == 1) {
                 didItWork = true;
             }
         } catch (CannotGetJdbcConnectionException e) {
