@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface AccountDao {
 
-
-    public boolean sendTEBucks(BigDecimal amountToAdd, int recepientId, int senderId );
     BigDecimal getBalance(int accountId);
+    boolean sendTEBucks(BigDecimal amountToAdd, int recepientId, int senderId );
+
 }
