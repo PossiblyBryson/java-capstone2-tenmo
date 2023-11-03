@@ -20,22 +20,24 @@ public class JdbcTransferDao implements TransferDao {
     @Autowired
     private AccountDao accountDAO;
 
+
     @Override
     public List<Transfer> getAllTransfers(int userId) {
         List<Transfer> list = new ArrayList<>();
-        String sql = "SELECT t.*, u.username AS userFrom, v.username AS userTo FROM transfers t " +
-                "JOIN accounts a ON t.account_from = a.account_id " +
-                "JOIN accounts b ON t.account_to = b.account_id " +
-                "JOIN users u ON a.user_id = u.user_id " +
-                "JOIN users v ON b.user_id = v.user_id " +
-                "WHERE a.user_id = ? OR b.user_id = ?";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId, userId);
+        String sql = "SELECT t.transfer_id, t.amount, t.transfer_type_id, t.transfer_status_id, " +
+                "CASE WHEN t.account_from = a.account_id THEN 'Sent' ELSE 'Received' END AS transfer_direction " +
+                "FROM transfer t " +
+                "JOIN account a ON t.account_from = a.account_id OR t.account_to = a.account_id " +
+                "WHERE a.user_id = ?";
+
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
         while (results.next()) {
             Transfer transfer = mapRowToTransfer(results);
             list.add(transfer);
         }
         return list;
     }
+
 
     @Override
     public Transfer getTransferById(int transactionId) {
@@ -110,3 +112,4 @@ public class JdbcTransferDao implements TransferDao {
         return transfer;
     }
 }
+
