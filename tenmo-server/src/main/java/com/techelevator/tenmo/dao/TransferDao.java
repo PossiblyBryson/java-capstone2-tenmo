@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.techelevator.tenmo.model.Transfers;
 
-public interface TransfersDAO {
+public interface TransferDao {
 
     public List<Transfers> getAllTransfers(int userId);
 

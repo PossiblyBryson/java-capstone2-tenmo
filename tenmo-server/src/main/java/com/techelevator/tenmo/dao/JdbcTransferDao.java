@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import com.techelevator.tenmo.model.Transfers;
 
 @Component
-public class JDBCTransfersDAO implements TransfersDAO {
+public class JdbcTransferDao implements TransfersDAO {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -94,14 +94,14 @@ public class JDBCTransfersDAO implements TransfersDAO {
 //            String sql = "UPDATE transfers SET transfer_status_id = ? WHERE transfer_id = ?;";
 //            jdbcTemplate.update(sql, statusId, transfer.getTransferId());
 //            accountDAO.addToBalance(transferAmount, transfer.getAccountTo());
-//            accountDAO.subtractFromBalance(transferAmount, transfer.getAccountFrom());
+//            accountDA.subtractFromBalance(transferAmount, transfer.getAccountFrom());
 //            return "Update successful";
 //        } else {
 //            return "Insufficient funds for transfer";
 //        }
         return null;
-
     }
+
     private Transfers mapRowToTransfer(SqlRowSet results) {
         Transfers transfer = new Transfers();
         transfer.setTransferId(results.getInt("transfer_id"));
