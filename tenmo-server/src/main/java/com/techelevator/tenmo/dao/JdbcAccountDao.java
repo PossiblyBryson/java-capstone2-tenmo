@@ -32,7 +32,7 @@ public class JdbcAccountDao implements AccountDao {
     public BigDecimal getBalance(int accountId){
         Account newAccount = null;
         // create account
-        String sql = "SELECT * FROM account WHERE user_id = ?";
+        String sql = "SELECT * FROM account WHERE account_id = ?";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountId);
             if(results.next()){
@@ -71,13 +71,14 @@ public class JdbcAccountDao implements AccountDao {
         if (recepientId == senderId) {
             throw new DaoException("Cannot send money to own account");
         }
-        if (amountToAdd.equals(0)) {
+        if (amountToAdd.equals(new BigDecimal(0))) {
             throw new DaoException("Cannot send an amount of 0");
         }
         if (amountToAdd.compareTo(BigDecimal.valueOf(0)) < 0) {
             throw new DaoException("Cannot send a negative amount");
         }
-        if (amountToAdd.compareTo(getBalance(getAccountIdFromUserId(senderId))) < 0) {
+        BigDecimal balanceAvailable = getBalance(getAccountIdFromUserId(senderId));
+        if (amountToAdd.compareTo(balanceAvailable) > 0) {
             throw new DaoException("Cannot send more money than is in your account");
         }
         String insertTransferSql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
