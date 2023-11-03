@@ -11,9 +11,7 @@ public interface TransferDao {
 
     public Transfer getTransferById(int transactionId);
 
-    public String sendTransfer(int userFrom, int userTo, BigDecimal amount);
-
-    public String requestTransfer(int userFrom, int userTo, BigDecimal amount);
+    public boolean requestTransfer(int userFrom, int userTo, BigDecimal amount);
 
     public List<Transfer> getPendingRequests(int userId);
 

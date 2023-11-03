@@ -50,13 +50,15 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     @Override
-    public String sendTransfer(int userFrom, int userTo, BigDecimal amount) {
-        return null;
-    }
-
-    @Override
-    public String requestTransfer(int userFrom, int userTo, BigDecimal amount) {
-        return null;
+    public boolean requestTransfer(int userFrom, int userTo, BigDecimal amount) {
+        boolean success = false;
+        String sql = "INSERT INTO transfer(transfer_type_id, transfer_status_id, account_from, " +
+                "account_to, amount) VALUES (1,1,?,?,?)";
+        int rowsAffected = jdbcTemplate.update(sql, accountDAO.getAccountIdFromUserId(userFrom), accountDAO.getAccountIdFromUserId(userTo), amount);
+        if (rowsAffected == 1) {
+            success = true;
+        }
+        return success;
     }
 
     @Override
