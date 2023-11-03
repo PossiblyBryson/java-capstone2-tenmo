@@ -8,6 +8,6 @@ public interface AccountDao {
 
     BigDecimal getBalance(int accountId);
     boolean sendTEBucks(BigDecimal amountToAdd, int recepientId, int senderId );
-
+    boolean acceptRequest(int transferId);
 
 }

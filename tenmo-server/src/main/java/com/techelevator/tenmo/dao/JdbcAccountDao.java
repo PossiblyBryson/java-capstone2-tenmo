@@ -109,6 +109,34 @@ public class JdbcAccountDao implements AccountDao {
         return didItWork;
     }
 
+    public boolean acceptRequest(int transferId) {
+        boolean didItWork = false;
+        String updateStatus = "UPDATE transfer SET transfer_status_id = " + APPROVED +
+                " WHERE transfer_id = ?";
+        String sqlAdd = "UPDATE account SET balance = balance + (SELECT amount FROM transfer WHERE transfer_id = ?) " +
+                "WHERE account_id = (SELECT account_to FROM transfer WHERE transfer_id = ?)";
+        String sqlSubtract = "UPDATE account SET balance = balance - (SELECT amount FROM transfer WHERE transfer_id = ?) " +
+                "WHERE account_id = (SELECT account_from FROM transfer WHERE transfer_id = ?)";
+        //create a record in the transfers table
+
+        try {
+            int updateStatusResults = jdbcTemplate.update(updateStatus, transferId);
+            int addResult = jdbcTemplate.update(sqlAdd, transferId, transferId);
+            int subtractResult = jdbcTemplate.update(sqlSubtract, transferId, transferId);
+            if (updateStatusResults == 1 && addResult == 1 && subtractResult == 1) {
+                didItWork = true;
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return didItWork;
+    }
+
+
+
+
     private Account mapRowToAccount(SqlRowSet rs) {
         Account account = new Account();
         account.setAccountId(rs.getInt("account_id"));
