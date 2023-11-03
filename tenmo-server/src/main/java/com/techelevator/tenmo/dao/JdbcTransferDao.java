@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.techelevator.tenmo.exception.DaoException;
 import com.techelevator.tenmo.exception.TransferNotFoundException;
 import com.techelevator.tenmo.model.Transfer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,11 +51,24 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     @Override
-    public boolean requestTransfer(int userFrom, int userTo, BigDecimal amount) {
+    public boolean requestTransfer(int accountFrom, int accountTo, BigDecimal amount) {
         boolean success = false;
-        String sql = "INSERT INTO transfer(transfer_type_id, transfer_status_id, account_from, " +
+        if (accountFrom == accountTo) {
+            throw new DaoException("Cannot send money to own account");
+        }
+        if (amount.equals(new BigDecimal(0))) {
+            throw new DaoException("Cannot send an amount of 0");
+        }
+        if (amount.compareTo(BigDecimal.valueOf(0)) < 0) {
+            throw new DaoException("Cannot send a negative amount");
+        }
+        BigDecimal balanceAvailable = accountDAO.getBalance(accountFrom);
+        if (amount.compareTo(balanceAvailable) > 0) {
+            throw new DaoException("Cannot send more money than is in your account");
+        }
+        String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, " +
                 "account_to, amount) VALUES (1,1,?,?,?)";
-        int rowsAffected = jdbcTemplate.update(sql, accountDAO.getAccountIdFromUserId(userFrom), accountDAO.getAccountIdFromUserId(userTo), amount);
+        int rowsAffected = jdbcTemplate.update(sql, accountFrom, accountTo, amount);
         if (rowsAffected == 1) {
             success = true;
         }
@@ -62,11 +76,11 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     @Override
-    public List<Transfer> getPendingRequests(int userId) {
+    public List<Transfer> getPendingRequests(int accountTo) {
         List<Transfer> transfers = new ArrayList<>();
         String sql = "SELECT * FROM transfer WHERE account_to = ? " +
                 "AND transfer_status_id = 1 AND transfer_type_id = 1";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountDAO.getAccountIdFromUserId(userId));
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountTo);
         while (results.next()) {
             transfers.add(mapRowToTransfer(results));
         }
