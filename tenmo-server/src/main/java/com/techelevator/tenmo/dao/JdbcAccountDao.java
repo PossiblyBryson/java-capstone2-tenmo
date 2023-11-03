@@ -44,16 +44,20 @@ public class JdbcAccountDao implements AccountDao {
     @Override
     public boolean sendTEBucks(BigDecimal amountToAdd, int recepientId, int senderId ) {
         boolean didItWork = false;
+        String insertTransferSql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+                "VALUES (?, ?, ?, ?, ?)";
         String sql = "UPDATE account SET balance = balance + ? " +
                 "WHERE user_id = ?";
         String sql1 = "UPDATE account SET balance = balance - ? " + "" +
                 "WHERE user_id =?";
         //create a record in the transfers table
-        String sql1 = "UPDATE account SET balance = balance - ? " + "WHERE user_id =?";
-       
+
         //TODO:create a record in the transfers table
+        int transferTypeId = 2;
+        int transferStatusId = 2;
 
         try {
+            int insertResults = jdbcTemplate.update(insertTransferSql, transferTypeId, transferStatusId, senderId, recepientId, amountToAdd);
             int results = jdbcTemplate.update(sql, amountToAdd, recepientId);
             int results1 = jdbcTemplate.update(sql1, amountToAdd, senderId);
             if (results == 1 && results1 == 1 ) {
