@@ -47,6 +47,7 @@ public class JdbcAccountDao implements AccountDao {
         return newAccount.getBalance();
     }
     // Add a method that gets accountId based on userId
+    @Override
     public int getAccountIdFromUserId(int userId){
         Account newAccount = null;
         // create account
