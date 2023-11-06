@@ -48,7 +48,7 @@ public class JdbcAccountDao implements AccountDao {
     }
     // Add a method that gets accountId based on userId
     @Override
-    public int getAccountIdFromUserId(int userId){
+    public Account getAccountByUserId(int userId){
         Account newAccount = null;
         // create account
         String sql = "SELECT * FROM account WHERE user_id = ?";
@@ -62,9 +62,28 @@ public class JdbcAccountDao implements AccountDao {
         } catch (DataIntegrityViolationException e) {
             throw new DaoException("Data integrity violation", e);
         }
-        return newAccount.getAccountId();
+        return newAccount;
 
     }
+    @Override
+    public Account getAccountByAccountId(int accountId){
+        Account newAccount = null;
+        // create account
+        String sql = "SELECT * FROM account WHERE account_id = ?";
+        try {
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountId);
+            if(results.next()){
+                newAccount = mapRowToAccount(results);
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return newAccount;
+
+    }
+
 
     private Account mapRowToAccount(SqlRowSet rs) {
         Account account = new Account();

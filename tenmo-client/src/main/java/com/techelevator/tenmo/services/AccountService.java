@@ -68,6 +68,42 @@ public class AccountService {
         }
         return users;
     }
+    public User getUserById(int id) {
+        User user = null;
+        try {
+            ResponseEntity<User> response = restTemplate.exchange(baseUrl + "accounts/userById/" + id,
+                    HttpMethod.GET, makeAuthEntity(), User.class);
+            user = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return user;
+    }
+    public Account getAccountByUserId(int userId){
+        Account account = null;
+        try {
+            ResponseEntity<Account> response = restTemplate.exchange(baseUrl + "accounts/accountByUserId/" + userId,
+                    HttpMethod.GET, makeAuthEntity(), Account.class);
+            account = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return account;
+
+    }
+    public Account getAccountByAccountId(int accountId){
+        Account account = null;
+        try {
+            ResponseEntity<Account> response = restTemplate.exchange(baseUrl + "accounts/accountByAccountId/" + accountId,
+                    HttpMethod.GET, makeAuthEntity(), Account.class);
+            account = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return account;
+
+    }
+
 
     private HttpEntity<Void> makeAuthEntity() {
         HttpHeaders headers = new HttpHeaders();

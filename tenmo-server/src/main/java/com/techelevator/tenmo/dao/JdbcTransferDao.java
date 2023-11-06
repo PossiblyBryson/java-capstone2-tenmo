@@ -39,7 +39,7 @@ public class JdbcTransferDao implements TransferDao {
         List<Transfer> list = new ArrayList<>();
         String sql = "SELECT * FROM transfer WHERE account_to = ? OR account_from = ? ";
 
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountDAO.getAccountIdFromUserId(userId), accountDAO.getAccountIdFromUserId(userId));
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountDAO.getAccountByUserId(userId).getAccountId(), accountDAO.getAccountByUserId(userId).getAccountId());
         while (results.next()) {
             Transfer transfer = mapRowToTransfer(results);
             list.add(transfer);
@@ -87,11 +87,11 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     @Override
-    public List<Transfer> getPendingRequests(int accountTo) {
+    public List<Transfer> getPendingRequests(int accountFrom) {
         List<Transfer> transfers = new ArrayList<>();
-        String sql = "SELECT * FROM transfer WHERE account_to = ? " +
+        String sql = "SELECT * FROM transfer WHERE account_from = ? " +
                 "AND transfer_status_id = 1 AND transfer_type_id = 1";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountTo);
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountFrom);
         while (results.next()) {
             transfers.add(mapRowToTransfer(results));
         }
@@ -110,7 +110,7 @@ public class JdbcTransferDao implements TransferDao {
         if (amountToAdd.compareTo(BigDecimal.valueOf(0)) < 0) {
             throw new DaoException("Cannot send a negative amount");
         }
-        BigDecimal balanceAvailable = accountDAO.getBalance(accountDAO.getAccountIdFromUserId(senderId));
+        BigDecimal balanceAvailable = accountDAO.getBalance(accountDAO.getAccountByUserId(senderId).getAccountId());
         if (amountToAdd.compareTo(balanceAvailable) > 0) {
             throw new DaoException("Cannot send more money than is in your account");
         }
@@ -127,7 +127,7 @@ public class JdbcTransferDao implements TransferDao {
         int transferStatusId = APPROVED;
 
         try {
-            int insertResults = jdbcTemplate.update(insertTransferSql, transferTypeId, transferStatusId, accountDAO.getAccountIdFromUserId(senderId), accountDAO.getAccountIdFromUserId(recepientId), amountToAdd);
+            int insertResults = jdbcTemplate.update(insertTransferSql, transferTypeId, transferStatusId, accountDAO.getAccountByUserId(senderId).getAccountId(), accountDAO.getAccountByUserId(recepientId).getAccountId(), amountToAdd);
             int results = jdbcTemplate.update(sql, amountToAdd, recepientId);
             int results1 = jdbcTemplate.update(sql1, amountToAdd, senderId);
             if (insertResults == 1 && results == 1 && results1 == 1) {
