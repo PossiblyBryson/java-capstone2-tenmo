@@ -1,15 +1,15 @@
 package com.techelevator.tenmo.services;
 
+import com.fasterxml.jackson.databind.introspect.TypeResolutionContext;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.util.BasicLogger;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
+
+import java.math.BigDecimal;
 
 public class TransferService {
     private final String baseUrl;
@@ -46,6 +46,22 @@ public class TransferService {
         }
         return transfers;
     }
+    public boolean sendTEBucks(BigDecimal amountToAdd, int recepientId, int senderId){
+        boolean success = false;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Transfer> entity = new HttpEntity<>(new Transfer(), headers);
+        try{
+            ResponseEntity<Boolean> response = restTemplate.postForObject(baseUrl +"transfer/" + senderId + "/send", HttpMethod.POST, makeAuthEntity()
+            , Boolean.class);
+            success = true;
+        } catch (RestClientResponseException | ResourceAccessException e){
+            BasicLogger.log(e.getMessage());
+        }
+        return success;
+    }
+
+
 
     private HttpEntity<Void> makeAuthEntity() {
         HttpHeaders headers = new HttpHeaders();

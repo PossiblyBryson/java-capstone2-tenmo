@@ -6,6 +6,7 @@ import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.tenmo.services.TransferService;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -146,19 +147,29 @@ public class App {
 	private void sendBucks() {
         User[] users = accountService.listUsers();
         int idSelection = -1;
+        BigDecimal amountSelection = new BigDecimal(0);
         System.out.println("Select someone to send TE bucks to: ");
         for(User user: users){
             System.out.println(user.getId() + " " + user.getUsername());
-
         }
         idSelection= consoleService.promptForMenuSelection("Enter ID of user you are sending to (0 to cancel):");
-        if(idSelection < 1){
-            mainMenu();
-        }
-        else{
+        amountSelection = consoleService.promptForBigDecimal("Enter amount you'd like to send: ");
 
 
+        boolean didItWork = false;
+        for(User user: users){
+            if(idSelection == user.getId()){
+                 didItWork = transferService.sendTEBucks(amountSelection, idSelection , currentUser.getUser().getId() );
+                 if(didItWork){
+                     System.out.println("Successfully sent");
+                     return;
+                 }
+            }
+
         }
+
+
+
 
 	}
 

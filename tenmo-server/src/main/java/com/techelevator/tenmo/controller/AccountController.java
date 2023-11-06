@@ -36,7 +36,7 @@ public class AccountController {
         }
     }
 
-    @RequestMapping(path = "/user", method = RequestMethod.GET)
+    @RequestMapping(path = "/users", method = RequestMethod.GET)
     public ResponseEntity<List<User>> getUsers(){
         List<User> users = userDao.getUsers();
         if (users != null) {
