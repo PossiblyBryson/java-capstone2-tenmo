@@ -1,11 +1,10 @@
 package com.techelevator.tenmo;
 
-import com.techelevator.tenmo.model.AuthenticatedUser;
-import com.techelevator.tenmo.model.User;
-import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+import com.techelevator.tenmo.services.TransferService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +16,7 @@ public class App {
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
     private final AccountService accountService = new AccountService(API_BASE_URL);
+    private final TransferService transferService = new TransferService(API_BASE_URL);
 
     private AuthenticatedUser currentUser;
 
@@ -96,12 +96,50 @@ public class App {
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
-		
+        int id = currentUser.getUser().getId();
+        Transfer[] transfers = transferService.listTransfers(id);
+        Account userAccount = accountService.getAccountByUserId(id);
+        System.out.println("ID: Transfers to/from: Amount: ");
+        System.out.println("--------------------------");
+        for(Transfer transfer:transfers){
+            Account otherAccount = null;
+            User otherUser = null;
+            if(userAccount.getAccountId() == transfer.getAccountFrom() ){
+
+                otherAccount = accountService.getAccountByAccountId(transfer.getAccountTo());
+                otherUser = accountService.getUserById(otherAccount.getUserId());
+                System.out.println(transfer.getTransferId() + "      " + "To : " + otherUser.getUsername() + "       $" + transfer.getAmount() );
+
+            }
+            else{
+
+                otherAccount = accountService.getAccountByAccountId(transfer.getAccountFrom());
+                otherUser = accountService.getUserById(otherAccount.getUserId());
+                System.out.println(transfer.getTransferId() + "      " + "From : " + otherUser.getUsername() + "       $" + transfer.getAmount() );
+            }
+
+        }
 	}
 
 	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
+        int userId = currentUser.getUser().getId();
+        Account userAccount = accountService.getAccountByUserId(userId);
+        int accountId = userAccount.getAccountId();
+        Transfer[] transfers = transferService.listPendingTransfers(accountId);
+        System.out.println("Pending Transfers:");
+        System.out.println("--------------------------");
+        System.out.println("ID: To: Amount: ");
+        System.out.println("--------------------------");
+        System.out.println(transfers);
+        for(Transfer transfer:transfers){
+            Account otherAccount = null;
+            User otherUser = null;
+            otherAccount = accountService.getAccountByAccountId(transfer.getAccountTo());
+            otherUser = accountService.getUserById(otherAccount.getUserId());
+            System.out.println(transfer.getTransferId() + "      " + " To : " + otherUser.getUsername() + "       $" + transfer.getAmount() );
+
+        }
+
 		
 	}
 

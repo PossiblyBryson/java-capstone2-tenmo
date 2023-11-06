@@ -15,7 +15,6 @@ import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.model.Transfer;
 
 @RestController
-@PreAuthorize("isAuthenticated()")
 @RequestMapping("/transfer")
 public class TransferController {
 
