@@ -27,10 +27,10 @@ public class AccountService {
         this.token = token;
     }
 
-    public BigDecimal getBalance(int id) {
+    public BigDecimal getBalance(int accountId) {
         BigDecimal balance = null;
         try {
-            ResponseEntity<BigDecimal> response = restTemplate.exchange(baseUrl + "accounts/" + id + "/balance",
+            ResponseEntity<BigDecimal> response = restTemplate.exchange(baseUrl + "accounts/" + accountId + "/balance",
                     HttpMethod.GET, makeAuthEntity(), BigDecimal.class);
             balance = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
