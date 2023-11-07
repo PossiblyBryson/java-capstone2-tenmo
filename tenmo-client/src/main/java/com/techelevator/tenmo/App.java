@@ -20,6 +20,12 @@ public class App {
     private final TransferService transferService = new TransferService(API_BASE_URL);
 
     private AuthenticatedUser currentUser;
+    private static int PENDING = 1;
+    private static int APPROVED =2;
+    private static int REJECTED = 3;
+
+    private static int REQUEST = 1;
+    private static int SEND = 2;
 
     public static void main(String[] args) {
         App app = new App();
@@ -93,7 +99,11 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
-        System.out.println(accountService.getBalance(currentUser.getUser().getId()));
+        int userId = currentUser.getUser().getId();
+        Account currentAccount = accountService.getAccountByUserId(userId);
+        int accountId = currentAccount.getAccountId();
+
+        System.out.println(accountService.getBalance(accountId));
 	}
 
 	private void viewTransferHistory() {
@@ -106,19 +116,33 @@ public class App {
             Account otherAccount = null;
             User otherUser = null;
             if(userAccount.getAccountId() == transfer.getAccountFrom() ){
-
                 otherAccount = accountService.getAccountByAccountId(transfer.getAccountTo());
                 otherUser = accountService.getUserById(otherAccount.getUserId());
                 System.out.println(transfer.getTransferId() + "      " + "To : " + otherUser.getUsername() + "       $" + transfer.getAmount() );
-
             }
             else{
-
                 otherAccount = accountService.getAccountByAccountId(transfer.getAccountFrom());
                 otherUser = accountService.getUserById(otherAccount.getUserId());
                 System.out.println(transfer.getTransferId() + "      " + "From : " + otherUser.getUsername() + "       $" + transfer.getAmount() );
             }
 
+        }
+
+        int enteredTransferId = consoleService.promptForInt("Please enter transfer ID to view details (0 to cancel):");
+        for(Transfer transfer: transfers){
+            if(enteredTransferId == 0){
+                return;
+            } else if (transfer.getTransferId() == enteredTransferId) {
+                System.out.println("ID:" + transfer.getTransferId());
+                System.out.println("From:" + transfer.getAccountFrom());
+                System.out.println("To:" + transfer.getAccountTo());
+                if(transfer.getTransferTypeId() == SEND){System.out.println("Type:Send");}
+                else if (transfer.getTransferTypeId() == REQUEST) {System.out.println("Type:Request");}
+                if(transfer.getTransferStatusId() == PENDING ){System.out.println("Type: Pending");}
+                else if (transfer.getTransferStatusId() == APPROVED) {System.out.println("Type: Approved");}
+                else if (transfer.getTransferStatusId() == REJECTED) {System.out.println("Type: Rejected");}
+                System.out.println("Amount:" + transfer.getAmount());
+            }
         }
 	}
 
@@ -131,15 +155,15 @@ public class App {
         System.out.println("--------------------------");
         System.out.println("ID: To: Amount: ");
         System.out.println("--------------------------");
-        System.out.println(transfers);
         for(Transfer transfer:transfers){
             Account otherAccount = null;
             User otherUser = null;
             otherAccount = accountService.getAccountByAccountId(transfer.getAccountTo());
             otherUser = accountService.getUserById(otherAccount.getUserId());
             System.out.println(transfer.getTransferId() + "      " + " To : " + otherUser.getUsername() + "       $" + transfer.getAmount() );
-
         }
+
+
 
 		
 	}
@@ -165,7 +189,6 @@ public class App {
                      return;
                  }
             }
-
         }
 
 

@@ -50,9 +50,9 @@ public class TransferService {
         boolean success = false;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Transfer> entity = new HttpEntity<>(new Transfer(), headers);
+        HttpEntity<Transfer> entity = new HttpEntity<>(new Transfer(amountToAdd, recepientId, senderId), headers);
         try{
-            ResponseEntity<Boolean> response = restTemplate.postForObject(baseUrl +"transfer/" + senderId + "/send", HttpMethod.POST, makeAuthEntity()
+            ResponseEntity<Boolean> response = restTemplate.exchange(baseUrl +"transfer/" + senderId + "/send", HttpMethod.POST, entity
             , Boolean.class);
             success = true;
         } catch (RestClientResponseException | ResourceAccessException e){

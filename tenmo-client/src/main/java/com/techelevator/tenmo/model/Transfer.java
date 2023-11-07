@@ -10,6 +10,13 @@ public class Transfer {
     private int accountTo;
     private BigDecimal amount;
 
+    public Transfer(BigDecimal amountToAdd, int recepientId, int senderId) {
+        this.amount = amountToAdd;
+        this.accountTo = recepientId;
+        this.accountFrom = senderId;
+    }
+    public Transfer(){}
+
     public int getTransferId() {
         return transferId;
     }
