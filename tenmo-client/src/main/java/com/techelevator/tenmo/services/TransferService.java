@@ -60,6 +60,44 @@ public class TransferService {
         }
         return success;
     }
+    public boolean requestTransfer(int accountFrom, int accountTo, BigDecimal amount ){
+        boolean success=false;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Transfer> entity = new HttpEntity<>(new Transfer(amount, accountTo, accountFrom), headers);
+        try{
+            ResponseEntity<Boolean> response = restTemplate.exchange(baseUrl +"transfer/request", HttpMethod.POST, entity
+                    , Boolean.class);
+            success = true;
+        } catch (RestClientResponseException | ResourceAccessException e){
+            BasicLogger.log(e.getMessage());
+        }
+        return success;
+
+    }
+    public boolean acceptRequest(int transferId){
+        boolean didItWork=false;
+        try{
+            ResponseEntity<Boolean> response = restTemplate.exchange(baseUrl +"transfer/request/"+transferId+"/accept", HttpMethod.PUT, makeAuthEntity()
+                    , Boolean.class);
+            didItWork = true;
+        } catch (RestClientResponseException | ResourceAccessException e){
+            BasicLogger.log(e.getMessage());
+        }
+        return didItWork;
+    }
+
+    public boolean denyRequest(int transferId){
+        boolean didItWork=false;
+        try{
+            ResponseEntity<Boolean> response = restTemplate.exchange(baseUrl +"transfer/request/"+transferId+"/deny", HttpMethod.PUT, makeAuthEntity()
+                    , Boolean.class);
+            didItWork = true;
+        } catch (RestClientResponseException | ResourceAccessException e){
+            BasicLogger.log(e.getMessage());
+        }
+        return didItWork;
+    }
 
 
 
